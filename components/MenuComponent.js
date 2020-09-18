@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { DISHES } from '../shared/dishes';
-import { View, FlatList, Text } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { FlatList } from 'react-native';
+import { ListItem, Avatar } from 'react-native-elements';
 
 export default function Menu({ navigation }){
-
-    const [selectedId, setSelectedId] = useState(null);
 
     const dishes = DISHES;
 
@@ -15,8 +13,8 @@ export default function Menu({ navigation }){
                 key={index}
                 hideChevron={true}
                 onPress={() => navigation.navigate('Dishdetail', { dishId: item.id })}
-                //Avatar={{ source: require('./images/uthappizza.png') }}
             >
+                <Avatar size="large" rounded source={require('./images/uthappizza.png')} />
                 <ListItem.Content>
                     <ListItem.Title>{item.name}</ListItem.Title>
                     <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
@@ -31,7 +29,6 @@ export default function Menu({ navigation }){
             data={dishes}
             renderItem={renderMenuItem}
             keyExtractor={item => item.id.toString()}
-            extraData={selectedId}
         />
     );
 }

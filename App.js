@@ -7,6 +7,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import Menu from './components/MenuComponent';
 import Dishdetail from './components/DishdetailComponent';
 import Home from './components/HomeComponent';
+import Contact from './components/ContactComponent';
+import About from './components/AboutComponent';
 
 const Stack = createStackNavigator();
 
@@ -36,7 +38,9 @@ function MyDraw() {
 
     <MainNavigator.Navigator initialRouteName="Home">
       <MainNavigator.Screen name="Home" component={MyHomeStack} />
+      <MainNavigator.Screen name="About Us" component={About} />
       <MainNavigator.Screen name="Menu" component={MyStack} />
+      <MainNavigator.Screen name="Contact Us" component={Contact} />
     </MainNavigator.Navigator>
 
 );
