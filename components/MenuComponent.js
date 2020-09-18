@@ -1,50 +1,37 @@
-import React, { Component } from 'react';
+import React, { useState } from "react";
 import { DISHES } from '../shared/dishes';
 import { View, FlatList, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-class Menu extends Component {
+export default function Menu({ navigation }){
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            dishes: DISHES
-        };
-    }
-    
-    static navigationOptions = {
-        title: 'Menu'
-    };
+    const [selectedId, setSelectedId] = useState(null);
 
-    
-    render(){
-        const renderMenuItem = ({item, index}) => {
-            return(
-                <ListItem
-                    key={index}
-                    hideChevron={true}
-                    onPress={() => navigate('Dishdetail', { dishId: item.id })}
-                    //Avatar={{ source: require('./images/uthappizza.png') }}
-                >
-                    <ListItem.Content>
+    const dishes = DISHES;
+
+    const renderMenuItem = ({item, index}) => {
+        return(
+            <ListItem
+                key={index}
+                hideChevron={true}
+                onPress={() => navigation.navigate('Dishdetail', { dishId: item.id })}
+                //Avatar={{ source: require('./images/uthappizza.png') }}
+            >
+                <ListItem.Content>
                     <ListItem.Title>{item.name}</ListItem.Title>
                     <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
-                    </ListItem.Content>
-                </ListItem>
-            );
-        }
-
-        // const { navigate } = this.props.navigation.navigate;
-
-        return (
-            <FlatList 
-                data={this.state.dishes}
-                renderItem={renderMenuItem}
-                keyExtractor={item => item.id.toString()}
-            />
+                </ListItem.Content>
+            </ListItem>
         );
     }
+
+
+    return (
+        <FlatList 
+            data={dishes}
+            renderItem={renderMenuItem}
+            keyExtractor={item => item.id.toString()}
+            extraData={selectedId}
+        />
+    );
 }
-
-
-export default Menu;

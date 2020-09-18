@@ -8,13 +8,12 @@ function RenderDish(props) {
 
     if(dish != null){
         return(
-            <Card
-                featuredTitle={dish.name}
-                image={require('./images/uthappizza.png')}
-            >
-                <Text style={{margin: 10}}>
-                    {dish.description}
-                </Text>
+            <Card>
+                <Card.Title>{dish.name}</Card.Title>
+                <Card.Image source={require('./images/uthappizza.png')}></Card.Image>
+                    <Text style={{margin: 10}}>
+                        {dish.description}
+                    </Text>
             </Card>
         );
     }
@@ -23,26 +22,13 @@ function RenderDish(props) {
     }
 }
 
-class Dishdetail extends Component {
+export default function Dishdetail({ route, navigation }) {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            dishes: DISHES
-        };
-    }
-
-    static navigationOptions = {
-        title: 'Dish Details'
-    };
+    const dishes = DISHES;
     
+    const { dishId } = route.params;
 
-    render() {
-        const dishId = this.props.navigation.getParam('dishId', '');
         
-        //Plus is used to cast string to a number
-        return(<RenderDish dish={this.state.dishes[+dishId]} />);
-    }
+    //Plus is used to cast string to a number
+    return(<RenderDish dish={dishes[+JSON.stringify(dishId)]} />);
 }
-
-export default Dishdetail;
