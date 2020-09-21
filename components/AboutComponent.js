@@ -2,6 +2,14 @@ import React, { Component } from 'react';
 import { SafeAreaView, Text, FlatList, ScrollView } from 'react-native';
 import { Card, ListItem, Avatar } from 'react-native-elements';
 import { LEADERS } from '../shared/leaders';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+
+const mapStateToProps = state => {
+    return {
+        leaders: state.leaders
+    }
+}
 
 function History(){
     return(
@@ -23,7 +31,7 @@ function History(){
     );
 }
 
-export default function About({ navigation }) {
+function About(props) {
 
     const leaders = LEADERS;
 
@@ -33,7 +41,7 @@ export default function About({ navigation }) {
                     key={index}
                     hideChevron={true}
                 >
-                    <Avatar size="large" rounded source={require('./images/alberto.png')} />
+                    <Avatar size="large" rounded source={{ uri: baseUrl + item.image }} />
                     <ListItem.Content>
                         <ListItem.Title>{item.name}</ListItem.Title>
                         <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
@@ -51,7 +59,7 @@ export default function About({ navigation }) {
                 <Card.Title>Corporate Leadership</Card.Title>
                 <Card.Divider />
                     <FlatList 
-                        data={leaders}
+                        data={props.leaders.leaders}
                         renderItem={renderLeaderItem}
                         keyExtractor={item => item.id.toString()}
                     />
@@ -60,3 +68,5 @@ export default function About({ navigation }) {
         </ScrollView>
     );
 }
+
+export default connect(mapStateToProps)(About);

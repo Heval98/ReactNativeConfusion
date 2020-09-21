@@ -1,5 +1,5 @@
 import GlobalStyles from './shared/GlobalStyles';
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { Button, View, Image, StyleSheet, SafeAreaView, ScrollView, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -10,6 +10,10 @@ import Home from './components/HomeComponent';
 import Contact from './components/ContactComponent';
 import About from './components/AboutComponent';
 import { Icon, SocialIcon } from 'react-native-elements';
+import { connect, Provider } from 'react-redux';
+import { ConfigureStore } from './redux/configureStore';
+
+const store = ConfigureStore();
 
 const Stack = createStackNavigator();
 
@@ -155,11 +159,15 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function App() {
+function App() {
+
   return (
-    <NavigationContainer>
-      <MyDraw />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <MyDraw />
+      </NavigationContainer>
+    </Provider>
   );
 }
 
+export default App;

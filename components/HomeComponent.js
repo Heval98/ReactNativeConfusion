@@ -4,6 +4,25 @@ import { Card } from 'react-native-elements';
 import { DISHES } from '../shared/dishes';
 import { PROMOTIONS } from '../shared/promotions';
 import { LEADERS } from '../shared/leaders';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators';
+
+
+const mapStateToProps = state => {
+    return {
+        dishes: state.dishes,
+        promotions: state.promotions,
+        leaders: state.leaders
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    fetchDishes: () => dispatch(fetchDishes()),
+    fetchComments: () => dispatch(fetchComments()),
+    fetchPromos: () => dispatch(fetchPromos()),
+    fetchLeaders: () => dispatch(fetchLeaders())
+});
 
 function RenderItem(props) {
     const item = props.item;
@@ -13,7 +32,7 @@ function RenderItem(props) {
             <Card>
                 <Card.Title>{item.name}</Card.Title>
                 <Card.FeaturedSubtitle>{item.designation}</Card.FeaturedSubtitle>
-                <Card.Image source={require('./images/uthappizza.png')}></Card.Image>
+                <Card.Image source={{ uri: baseUrl + item.image }}></Card.Image>
                     <Text style={{margin: 10}}>
                         {item.description}
                     </Text>
@@ -38,17 +57,24 @@ class Home extends Component {
             leaders: LEADERS
         }
     }
-    
+
+    componentDidMount(){
+        this.props.fetchDishes();
+        this.props.fetchComments();
+        this.props.fetchPromos();
+        this.props.fetchLeaders();
+        console.log(this.props.dishes.dishes)
+    }
 
     render() {
         return(
             <ScrollView>
-                <RenderItem item={this.state.dishes.filter((dish) => dish.featured)[0]} />
-                <RenderItem item={this.state.promotions.filter((promo) => promo.featured)[0]} />
-                <RenderItem item={this.state.leaders.filter((leader) => leader.featured)[0]} />
+                <RenderItem item={this.props.dishes.dishes.filter((dish) => dish.featured)[0]} />
+                <RenderItem item={this.props.promotions.promotions.filter((promo) => promo.featured)[0]} />
+                <RenderItem item={this.props.leaders.leaders.filter((leader) => leader.featured)[0]} />
             </ScrollView>
         );
     }
 }
 
-export default Home;
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
