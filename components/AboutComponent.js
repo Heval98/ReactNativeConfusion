@@ -4,6 +4,7 @@ import { Card, ListItem, Avatar } from 'react-native-elements';
 import { LEADERS } from '../shared/leaders';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
+import Loading from './LoadingComponent';
 
 const mapStateToProps = state => {
     return {
@@ -51,22 +52,46 @@ function About(props) {
         );
     }
 
+    if(props.leaders.isLoading) {
+        return(
+            <ScrollView style={{marginTop: 25}}>
+                <History />
+                <Card>
+                    <Card.Title>Corporate Leadership</Card.Title>
+                    <Loading />
+                </Card>
+            </ScrollView>
+        );
+    }else if(props.leaders.errMess) {
+        return(
+            <ScrollView style={{marginTop: 25}}>
+                <History />
+                <Card>
+                    <Card.Title>Corporate Leadership</Card.Title>
+                    <Text >{props.leaders.errMess}</Text>
+                </Card>
+            </ScrollView>
+        );
+        
+    }else {
+        return (
+            <ScrollView style={{marginTop: 25}}>
+                <History />
+                <Card>
+                    <Card.Title>Corporate Leadership</Card.Title>
+                    <Card.Divider />
+                        <FlatList 
+                            data={props.leaders.leaders}
+                            renderItem={renderLeaderItem}
+                            keyExtractor={item => item.id.toString()}
+                        />
+                </Card>
+                
+            </ScrollView>
+        );
+    }
 
-    return (
-        <ScrollView style={{marginTop: 25}}>
-            <History />
-            <Card>
-                <Card.Title>Corporate Leadership</Card.Title>
-                <Card.Divider />
-                    <FlatList 
-                        data={props.leaders.leaders}
-                        renderItem={renderLeaderItem}
-                        keyExtractor={item => item.id.toString()}
-                    />
-            </Card>
-            
-        </ScrollView>
-    );
+    
 }
 
 export default connect(mapStateToProps)(About);
