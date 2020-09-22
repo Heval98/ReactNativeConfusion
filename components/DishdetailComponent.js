@@ -5,13 +5,19 @@ import { DISHES } from '../shared/dishes';
 import { COMMENTS } from '../shared/comments';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
+import { postFavorite } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
         dishes: state.dishes,
-        comments: state.comments
+        comments: state.comments,
+        favorites: state.favorites
     }
 }
+
+const mapDispatchToProps = dispatch => ({
+    postFavorite: (dishId) => dispatch(postFavorite(dishId))
+});
 
 function RenderDish(props) {
     const dish = props.dish;
@@ -66,15 +72,11 @@ function RenderComments(props) {
 
 function Dishdetail(props) {
 
-    const dishes = DISHES;
-    const comments = COMMENTS;
-    const [favorites, setFavorites] = useState([]);
-
     
     const { dishId } = props.route.params;
     
     markFavorite = (dishId) => {
-        setFavorites(favorites.concat(parseInt(dishId).toString()));
+        props.postFavorite(dishId);
     }
         
     //Plus is used to cast string to a number
@@ -82,7 +84,7 @@ function Dishdetail(props) {
         <ScrollView>
             <RenderDish dish={props.dishes.dishes[+JSON.stringify(dishId)]} 
                 //Return a true if exists otherwise return false
-                favorite={favorites.some(el => el === parseInt(dishId).toString())}
+                favorite={props.favorites.some(el => el === dishId)}
                 onPress={() => markFavorite(dishId)}
             />
             <RenderComments comments={props.comments.comments.filter((comment) => comment.dishId === (dishId))} />
@@ -90,4 +92,4 @@ function Dishdetail(props) {
     );
 }
 
-export default connect(mapStateToProps)(Dishdetail);
+export default connect(mapStateToProps, mapDispatchToProps)(Dishdetail);
