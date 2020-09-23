@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, Switch, Button, Picker } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Switch, Button, Picker, Modal } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -14,12 +14,17 @@ class Reservation extends Component {
             guests: 1,
             smoking: false,
             date: '',
-            show: false
+            showModal: false,
+            showDatePicker: false
         }
     }
 
     handleReservation() {
         console.log(JSON.stringify(this.state));
+        this.toggleModal();
+    }
+
+    resetForm(){
         this.setState({
             guests: 1,
             smoking: false,
@@ -27,8 +32,12 @@ class Reservation extends Component {
         });
     }
 
+    toggleModal(){
+        this.setState({ showModal: !this.state.showModal })
+    }
+
     showDatePicker(){
-        this.setState({ show: true });
+        this.setState({ showDatePicker: true });
     }
 
     render() {
@@ -63,25 +72,43 @@ class Reservation extends Component {
                 <View style={styles.formRow}>
                     <Text style={styles.formLabel} >Date and Time</Text>
                     <Icon style={styles.formItem} name='event' onPress={() => this.showDatePicker()}></Icon>
-                    {this.state.show && (<DateTimePicker
+                    {this.state.showDatePicker && (<DateTimePicker
                         value={todayDate}
                         style={{ flex: 2, marginRight: 20 }}
                         date={this.state.date}
                         mode='date'
                         minimumDate={minDate}
                         onChange={(date) => {this.setState({ date: date.nativeEvent.timestamp })}}
-                        onResponderEnd={this.setState({ show: false })}
+                        onResponderEnd={this.setState({ showDatePicker: false })}
                     />)}
                 </View>
                 <View style={styles.formRow}>
                     <Button 
-                        style={styles.button}
                         title='Reserve'
                         color='#512DA8'
                         onPress={() => this.handleReservation()}
                         accessibilityLabel='Learn more about this purple button'
                     />
                 </View>
+                <Modal
+                    animationType={'slide'}
+                    transparent={false}
+                    visible={this.state.showModal}
+                    onDismiss={() => {this.toggleModal(); this.resetForm()}}
+                    onRequestClose={() => {this.toggleModal(); this.resetForm()}}
+                >
+                    <View style={styles.modal}>
+                        <Text style={styles.modalTitle}>Your Reservation</Text>
+                        <Text style={styles.modalText}>Number of Guests: {this.state.guests}</Text>
+                        <Text style={styles.modalText}>Smoking? : {this.state.smoking ? 'Yes' : 'No'}</Text>
+                        <Text style={styles.modalText}>Date and Time: {this.state.date}</Text>
+                        <Button
+                            onPress={() => {this.toggleModal(); this.resetForm()}}
+                            color='#512DA8'
+                            title='Close'
+                        />
+                    </View>
+                </Modal>
             </ScrollView>
         );
     }
@@ -102,9 +129,21 @@ const styles = StyleSheet.create({
     formItem: {
         flex: 1
     },
-    button: {
-        borderRadius: 10,
-        padding: 10
+    modal: {
+        justifyContent: 'center',
+        margin: 20
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        backgroundColor: '#512DA8',
+        textAlign: 'center',
+        color: 'white',
+        marginBottom: 20
+    },
+    modalText: {
+        fontSize: 18,
+        margin: 10
     }
 })
 
