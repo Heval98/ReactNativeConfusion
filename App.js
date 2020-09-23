@@ -7,6 +7,7 @@ import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer'
 import Menu from './components/MenuComponent';
 import Dishdetail from './components/DishdetailComponent';
 import Reservation from './components/ReservationComponent';
+import Favorites from './components/FavoriteComponent';
 import Home from './components/HomeComponent';
 import Contact from './components/ContactComponent';
 import About from './components/AboutComponent';
@@ -136,6 +137,16 @@ function MyDraw() {
         drawerIcon: (props) => (
           <Icon
             name='import-contacts'
+            size={24}
+          />
+        ),
+      }}
+      />
+      <MainNavigator.Screen name="Favorites" component={Favorites}
+      options={{
+        drawerIcon: (props) => (
+          <Icon
+            name='favorite'
             size={24}
           />
         ),
