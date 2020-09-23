@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
 import Menu from './components/MenuComponent';
 import Dishdetail from './components/DishdetailComponent';
+import Reservation from './components/ReservationComponent';
 import Home from './components/HomeComponent';
 import Contact from './components/ContactComponent';
 import About from './components/AboutComponent';
@@ -126,6 +127,16 @@ function MyDraw() {
           <Icon
             name='contact-phone'
             size={22}
+          />
+        ),
+      }}
+      />
+      <MainNavigator.Screen name="Reservation" component={Reservation}
+      options={{
+        drawerIcon: (props) => (
+          <Icon
+            name='import-contacts'
+            size={24}
           />
         ),
       }}
