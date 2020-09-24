@@ -4,6 +4,7 @@ import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postComment, postFavorite } from '../redux/ActionCreators';
+import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
     return {
@@ -74,17 +75,19 @@ function RenderDish(props) {
     if(dish != null){
         return(
             <View>
-                <Card>
-                    <Card.Title>{dish.name}</Card.Title>
-                    <Card.Image source={{ uri: baseUrl + dish.image }}></Card.Image>
-                        <Text style={{margin: 10}}>
-                            {dish.description}
-                        </Text>
-                        <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-                            <Icon raised reverse name={ props.favorite ? 'favorite' : 'favorite-border' } color='#f50' onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()} />
-                            <Icon raised reverse name='edit' color='#1A1CE3' onPress={() => setShowModal(!showModal)} />
-                        </View>
-                </Card>
+                <Animatable.View animation="fadeInDown" duration={2000} delay={1000} >
+                    <Card>
+                        <Card.Title>{dish.name}</Card.Title>
+                        <Card.Image source={{ uri: baseUrl + dish.image }}></Card.Image>
+                            <Text style={{margin: 10}}>
+                                {dish.description}
+                            </Text>
+                            <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+                                <Icon raised reverse name={ props.favorite ? 'favorite' : 'favorite-border' } color='#f50' onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()} />
+                                <Icon raised reverse name='edit' color='#1A1CE3' onPress={() => setShowModal(!showModal)} />
+                            </View>
+                    </Card>
+                </Animatable.View>
                 <Modal
                     animationType={'slide'}
                     transparent={false}
@@ -167,14 +170,16 @@ function RenderComments(props) {
     }
 
     return(
-        <Card>
-            <Card.Title>Comments</Card.Title>
-                <FlatList 
-                    data={comments}
-                    renderItem={renderCommentItem}
-                    keyExtractor={item => item.id.toString()}
-                />
-        </Card>
+        <Animatable.View animation="fadeInUp" duration={2000} delay={1000} >
+            <Card>
+                <Card.Title>Comments</Card.Title>
+                    <FlatList 
+                        data={comments}
+                        renderItem={renderCommentItem}
+                        keyExtractor={item => item.id.toString()}
+                    />
+            </Card>
+        </Animatable.View>
     );
 }
 
