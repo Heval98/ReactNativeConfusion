@@ -14,8 +14,10 @@ import About from './components/AboutComponent';
 import { Icon, SocialIcon } from 'react-native-elements';
 import { connect, Provider } from 'react-redux';
 import { ConfigureStore } from './redux/configureStore';
+import { PersistGate } from 'redux-persist/es/integration/react';
+import Loading from './components/LoadingComponent';
 
-const store = ConfigureStore();
+const { persistor, store } = ConfigureStore();
 
 const Stack = createStackNavigator();
 
@@ -184,12 +186,15 @@ const styles = StyleSheet.create({
 function App() {
 
   return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <MyDraw />
-      </NavigationContainer>
-    </Provider>
-  );
+      <Provider store={store}>
+        <PersistGate loading={<Loading />} persistor={persistor}>
+          <NavigationContainer>
+            <MyDraw />
+          </NavigationContainer>
+        </PersistGate>
+      </Provider>
+    );
+
 }
 
 export default App;
