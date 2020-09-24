@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, FlatList, Modal, StyleSheet, Button, Alert, PanResponder } from 'react-native';
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -27,6 +27,8 @@ function RenderDish(props) {
     const [author, setAuthor] = useState('');
     const [comment, setComment] = useState('');
 
+    handleViewRef = ref => this.view = ref;
+
     const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
         if(dx < -200)
             return true;
@@ -38,6 +40,10 @@ function RenderDish(props) {
         onStartShouldSetPanResponder: (e, gestureState) => {
             return true;
         },
+        onPanResponderGrant: () => {
+            this.view.rubberBand(1000)
+                .then(endState => console.log(endState.finished ? 'finished' : 'cancelled'))
+        },  
         onPanResponderEnd: (e, gestureState) => {
             if(recognizeDrag(gestureState))
                 Alert.alert(
@@ -110,6 +116,7 @@ function RenderDish(props) {
         return(
             <View>
                 <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
+                    ref={this.handleViewRef}
                     {...panResponder.panHandlers} >
                     <Card>
                         <Card.Title>{dish.name}</Card.Title>
