@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, FlatList, Modal, StyleSheet, Button } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, ScrollView, FlatList, Modal, StyleSheet, Button, Alert, PanResponder } from 'react-native';
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
@@ -19,6 +19,7 @@ const mapDispatchToProps = dispatch => ({
     postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)) 
 });
 
+
 function RenderDish(props) {
     
     const [showModal, setShowModal] = useState(false);
@@ -26,6 +27,39 @@ function RenderDish(props) {
     const [author, setAuthor] = useState('');
     const [comment, setComment] = useState('');
 
+    const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
+        if(dx < -200)
+            return true;
+        else
+            return false;
+    };
+    
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: (e, gestureState) => {
+            return true;
+        },
+        onPanResponderEnd: (e, gestureState) => {
+            if(recognizeDrag(gestureState))
+                Alert.alert(
+                    'Add to Favorites?',
+                    'Are you sure you wish to add ' + dish.name + ' to your favorites?',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => console.log('Cancel action'),
+                            style: 'cancel'
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => props.favorite ? console.log('Already favorite') : props.onPress()
+                        }
+                    ],
+                    { cancelable: false }
+                )
+            return true;
+        }
+    })
+    
     const resetForm = () => {
         setRating(0);
         setAuthor('');
@@ -75,7 +109,8 @@ function RenderDish(props) {
     if(dish != null){
         return(
             <View>
-                <Animatable.View animation="fadeInDown" duration={2000} delay={1000} >
+                <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
+                    {...panResponder.panHandlers} >
                     <Card>
                         <Card.Title>{dish.name}</Card.Title>
                         <Card.Image source={{ uri: baseUrl + dish.image }}></Card.Image>
@@ -192,7 +227,7 @@ function Dishdetail(props) {
     }
         
     //Plus is used to cast string to a number
-    return(
+    return(    
         <ScrollView>
             <RenderDish dish={props.dishes.dishes[+JSON.stringify(dishId)]} 
                 //Return a true if exists otherwise return false
