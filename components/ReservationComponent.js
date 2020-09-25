@@ -3,6 +3,8 @@ import { Text, View, ScrollView, StyleSheet, Switch, Button, Picker, Modal, Aler
 import { Card, Icon } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Animatable from 'react-native-animatable';
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
 
 const todayDate = Date.now();
 const minDate = Date.now;
@@ -33,6 +35,25 @@ class Reservation extends Component {
         });
     }
 
+    async obtainNotificationPermission() {
+        let permission = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show notifications');
+            }
+        }
+        return permission;
+    }
+
+    async presentLocalNotification(date) {
+        await this.obtainNotificationPermission();
+        await Notifications.presentNotificationAsync({
+            title: 'Your Reservation',
+            body: 'Reservation for '+ date + ' requested',
+        });
+    }
+
     alertToggle(){
         Alert.alert(
             'Your Reservation OK?',
@@ -40,12 +61,12 @@ class Reservation extends Component {
             [
                 {
                     text: 'Cancel',
-                    onPress: this.resetForm(),
+                    onPress: () => this.resetForm(),
                     style: 'cancel'
                 },
                 {
                     text: 'OK',
-                    onPress: this.resetForm()
+                    onPress: () => {this.presentLocalNotification((new Date((parseInt(this.state.date))))); this.resetForm();}
                 }
             ],
             { cancelable: false }
