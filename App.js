@@ -16,6 +16,7 @@ import { connect, Provider } from 'react-redux';
 import { ConfigureStore } from './redux/configureStore';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import Loading from './components/LoadingComponent';
+import Login from './components/LoginComponent';
 
 const { persistor, store } = ConfigureStore();
 
@@ -95,6 +96,16 @@ function MyDraw() {
   return(
 
     <MainNavigator.Navigator initialRouteName="Home" draw drawerContent={(props) => <CustomDrawerContentComponent {...props} />}>
+      <MainNavigator.Screen name="Login" component={Login} 
+        options={{
+          drawerIcon: (props) => (
+            <Icon
+              name='sign-in'
+              size={24}
+              type='font-awesome'
+            />
+          ),
+        }} />
       <MainNavigator.Screen name="Home" component={MyHomeStack} 
         options={{
           drawerIcon: (props) => (
