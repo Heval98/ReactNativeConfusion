@@ -1,6 +1,7 @@
 import GlobalStyles from './shared/GlobalStyles';
 import React, { useEffect } from 'react';
-import { Button, View, Image, StyleSheet, SafeAreaView, ScrollView, Text } from 'react-native';
+import { Button, View, Image, StyleSheet, SafeAreaView, ScrollView, Text, ToastAndroid } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
@@ -195,6 +196,23 @@ const styles = StyleSheet.create({
 })
 
 function App() {
+
+  const unsubscribe = NetInfo.addEventListener(state => {
+    ToastAndroid.show("Connection type " + state.type, ToastAndroid.LONG);
+    ToastAndroid.show("Is connected? " + state.isConnected, ToastAndroid.LONG);
+  });
+
+  useEffect(() => {
+    NetInfo.fetch().then(state => {
+      ToastAndroid.show("Connection type " + state.type, ToastAndroid.LONG);
+      ToastAndroid.show("Is connected? " + state.isConnected, ToastAndroid.LONG);
+    });
+  });
+
+  useEffect(() => {
+    unsubscribe(); 
+  });
+
 
   return (
       <Provider store={store}>
