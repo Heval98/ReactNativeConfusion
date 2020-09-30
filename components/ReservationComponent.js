@@ -5,6 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Animatable from 'react-native-animatable';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
+import * as Calendar from 'expo-calendar';
 
 const todayDate = Date.now();
 const minDate = Date.now;
@@ -24,6 +25,7 @@ class Reservation extends Component {
 
     handleReservation() {
         console.log(JSON.stringify(this.state));
+        this.addReservationToCalendar(new Date((parseInt(this.state.date))));
         this.alertToggle();
     }
 
@@ -53,6 +55,38 @@ class Reservation extends Component {
             body: 'Reservation for '+ date + ' requested',
         });
     }
+
+    async obtainCalendarPermission() {
+        let permission = await Permissions.getAsync(Permissions.CALENDAR);
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(Permissions.CALENDAR);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to set date in calendar');
+            }
+        }
+        return permission;
+    }
+
+    async getDefaultCalendarSource() {
+        const calendars = await Calendar.getCalendarsAsync();
+        const defaultCalendars = calendars.filter(each => each.source.name === 'Default');
+        return defaultCalendars[0].source;
+    }
+
+    async addReservationToCalendar(date) {
+        await this.obtainCalendarPermission();
+        const details = {
+            title: 'Con Fusion Table Reservation',
+            startDate: date,
+            endDate: date * (2*60*60*1000),
+            timeZone: 'Asia/Hong_Kong'
+        }
+        const newEvent = await Calendar.createEventAsync(
+            this.getDefaultCalendarSource(),
+            details
+        );
+        newEvent();
+      }
 
     alertToggle(){
         Alert.alert(
