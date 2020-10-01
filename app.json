@@ -3,8 +3,17 @@
   "displayName": "confusion",
   "expo": {
     "name": "confusion",
+    "icon": "./icon.png",
     "slug": "confusion",
     "version": "1.0.0",
+    "ios": {
+      "bundleIdentifier": "com.hevalco.confusion",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.hevalco.confusion",
+      "versionCode": 1
+    },
     "assetBundlePatterns": [
       "**/*"
     ]
